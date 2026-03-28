@@ -1,106 +1,93 @@
-import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-
-const NAV_LINKS = [
-  { label: 'Home', url: 'https://www.regalisrealtymedia.com', target: '_self' },
-  { label: 'Portfolio', url: 'https://regalisrealtymedia25.pixieset.com/regalisrealtymediaportfolio/compassphotos/', target: '_blank' },
-  { label: 'Pricing', url: 'https://pricing.regalisrealtymedia.com', target: '_self' },
-  { label: 'Calculator', url: 'https://calculator.regalisrealtymedia.com', target: '_self' },
-  { label: 'Catalog', url: 'https://catalog.regalisrealtymedia.com', target: '_self' },
-  { label: 'Branding', url: 'https://branding.regalisrealtymedia.com', target: '_self' },
-  { label: 'Portal', url: 'https://portal.regalisrealtymedia.com', target: '_self' },
-  { label: 'Contact', url: 'https://contact.regalisrealtymedia.com', target: '_self', active: true },
-];
+import { useEffect } from 'react';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-
   useEffect(() => {
-    if (isOpen) {
+    // ===== REGALIS UNIVERSAL NAVBAR JS =====
+    const hamburger = document.getElementById('navHamburger');
+    const navLinks = document.getElementById('navLinks');
+    const overlay = document.getElementById('navOverlay');
+
+    function openMenu() {
+      if (hamburger) hamburger.classList.add('open');
+      if (navLinks) navLinks.classList.add('open');
+      if (overlay) overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
-    } else {
+    }
+
+    function closeMenu() {
+      if (hamburger) hamburger.classList.remove('open');
+      if (navLinks) navLinks.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
       document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
+
+    const toggleMenu = function() {
+      if (navLinks && navLinks.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     };
-  }, [isOpen]);
+
+    if (hamburger) {
+      hamburger.addEventListener('click', toggleMenu);
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', closeMenu);
+    }
+
+    // Close menu when a link is clicked
+    if (navLinks) {
+      navLinks.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', closeMenu);
+      });
+    }
+    // ===== END NAVBAR JS =====
+
+    // Set active page — CHANGE THE VALUE BELOW FOR EACH APP
+    const activeLink = document.querySelector('.nav-link[data-page="contact"]');
+    if (activeLink) {
+      activeLink.classList.add('active');
+    }
+
+    return () => {
+      if (hamburger) hamburger.removeEventListener('click', toggleMenu);
+      if (overlay) overlay.removeEventListener('click', closeMenu);
+      if (navLinks) {
+        navLinks.querySelectorAll('.nav-link').forEach(function(link) {
+          link.removeEventListener('click', closeMenu);
+        });
+      }
+    };
+  }, []);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 h-[70px] bg-black/85 backdrop-blur-md z-[1000] border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-          <a href="https://www.regalisrealtymedia.com" className="flex-shrink-0">
-            <img 
-              src="https://cdn.prod.website-files.com/6695980889d8d99cedb29bc7/66c7f601fff376e4c95274b3_Regalis%20Realty%20Main%20Logo%20(1).png" 
-              alt="Regalis Realty Media" 
-              className="h-[32px] md:h-[38px] w-auto"
-              referrerPolicy="no-referrer"
-            />
+      <nav className="regalis-nav" id="regalisNav">
+        <div className="nav-inner">
+          <a href="https://www.regalisrealtymedia.com" className="nav-logo">
+            <img src="https://cdn.prod.website-files.com/6695980889d8d99cedb29bc7/66c7f601fff376e4c95274b3_Regalis%20Realty%20Main%20Logo%20(1).png" alt="Regalis Realty Media" className="nav-logo-img" />
           </a>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.url}
-                target={link.target}
-                className={`text-sm font-medium transition-colors duration-200 py-6 ${
-                  link.active 
-                    ? 'text-[#c9a84c] border-b-2 border-[#c9a84c]' 
-                    : 'text-[#D4D4D4] hover:text-white border-b-2 border-transparent'
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
+          <div className="nav-links" id="navLinks">
+            <a href="https://www.regalisrealtymedia.com" className="nav-link" data-page="home">Home</a>
+            <a href="https://regalisrealtymedia25.pixieset.com/regalisrealtymediaportfolio/compassphotos/" className="nav-link" data-page="portfolio" target="_blank" rel="noreferrer">Portfolio</a>
+            <a href="https://pricing.regalisrealtymedia.com" className="nav-link" data-page="pricing">Pricing</a>
+            <a href="https://calculator.regalisrealtymedia.com" className="nav-link" data-page="calculator">Calculator</a>
+            <a href="https://catalog.regalisrealtymedia.com" className="nav-link" data-page="catalog">Catalog</a>
+            <a href="https://branding.regalisrealtymedia.com" className="nav-link" data-page="branding">Branding</a>
+            <a href="https://portal.regalisrealtymedia.com" className="nav-link" data-page="portal">Portal</a>
+            <a href="https://contactus.regalisrealtymedia.com" className="nav-link" data-page="contact">Contact</a>
+            <a href="https://prep.regalisrealtymedia.com" className="nav-link" data-page="checklist">Listing Checklist</a>
           </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-[#D4D4D4] hover:text-white focus:outline-none p-2"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
+          <button className="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay */}
-      <div 
-        className={`fixed inset-0 bg-black/60 z-[998] transition-opacity duration-300 md:hidden ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setIsOpen(false)}
-      />
-
-      {/* Mobile Menu Panel */}
-      <div 
-        className={`fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-black/95 backdrop-blur-xl z-[999] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-[70px] border-l border-white/10 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex flex-col py-4 overflow-y-auto">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.url}
-              target={link.target}
-              className={`text-[18px] px-6 py-4 border-b border-[#1a1a1a] transition-colors ${
-                link.active 
-                  ? 'text-[#c9a84c] border-l-4 border-l-[#c9a84c] pl-5' 
-                  : 'text-[#D4D4D4] hover:text-white hover:bg-white/5 border-l-4 border-l-transparent'
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </div>
+      <div className="nav-overlay" id="navOverlay"></div>
     </>
   );
 }
