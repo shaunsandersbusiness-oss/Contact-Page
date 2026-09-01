@@ -18,7 +18,8 @@ export default function ContactForm() {
       subject: formData.get('subject'),
       message: formData.get('message'),
       source: 'Regalis Contact Page',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      verified: 'rgls_9K4mQx7vT2pLdN8wZ3hB'
     };
 
     try {
